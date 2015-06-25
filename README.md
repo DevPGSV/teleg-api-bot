@@ -1,6 +1,11 @@
 # teleg-api-bot
 Telegram Api for new bot system
 
+Dependencies: py-yaml
+
+
+"main.py" is the main file to run. It is an example of a bot.
+
 Example bot:
 
 ```python

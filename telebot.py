@@ -8,6 +8,11 @@ import string
 class telegbot:
     def __init__(self):
         self.config = yaml.load(open("config.yml", 'r'))
+        self.data = self.getBotData()
+        self.on_receive_message = self.void_callback
+        self.on_new_chat_participant = self.void_callback
+        self.quit = False
+        print(self.data)
     
     def apiRequest(self, method, parameters = {}):
         if not self.methodExists(method):
@@ -15,7 +20,9 @@ class telegbot:
         url = self.config["telegramBotApi"]["api_url"]
         url = url.replace('{token}', self.getBotToken())
         url = url.replace('{method}', method)
-        values = parameters
+        values = self.manageParameters(method, parameters)
+        if values == None:
+            return False
         data = urllib.parse.urlencode(values)
         data = data.encode('utf-8') # data should be bytes
         req = urllib.request.Request(url, data)
@@ -24,7 +31,40 @@ class telegbot:
             #the_page = response.read().decode()
             #return json.dumps(json.loads(the_page))
         return False
-    def sendMessage(self, chat_id):
-        return
+    
+    def manageParameters(self, method, parameters):
+        managedParams = {}
+        if not self.methodExists(method):
+            return False
+        if self.config["telegramBotApi"]["methods"][method]["parameters"] == None:
+            return managedParams
+        for methodParameter in self.config["telegramBotApi"]["methods"][method]["parameters"]:
+            methodParameterData = self.config["telegramBotApi"]["methods"][method]["parameters"][methodParameter]
+            if methodParameter in parameters:
+                if (parameters[methodParameter] == None and not methodParameterData["required"]):
+                    continue
+                if not (methodParameterData["type"] == type(parameters[methodParameter]).__name__):
+                    return False
+                managedParams[methodParameterData["parameter"]] = parameters[methodParameter]
+            else:
+                if methodParameter["required"]:
+                    return False
+        return managedParams
+    
+    def methodExists(self, method):
+        return method in self.config["telegramBotApi"]["methods"]
+    
+    def getBotToken(self):
+        return self.config["botData"]["token"]
+    
+    def sendMessage(self, chat_id, text, disable_web_page_preview=False, reply_to_message_id=None, reply_markup=None):
+        response = self.apiRequest('sendMessage', {
+            "chat_id": chat_id,
+            "text": text,
+            "disable_web_page_preview": disable_web_page_preview,
+            "reply_to_message_id": reply_to_message_id,
+            "reply_markup": reply_markup
+        })
+    
     
     

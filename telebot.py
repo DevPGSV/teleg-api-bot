@@ -5,6 +5,7 @@ import json
 import yaml
 import string
 
+
 class telegbot:
     def __init__(self):
         self.config = yaml.load(open("config.yml", 'r'))
@@ -13,6 +14,9 @@ class telegbot:
         self.on_new_chat_participant = self.void_callback
         self.quit = False
         print(self.data)
+    
+    def void_callback(self, data={}):
+        return
     
     def apiRequest(self, method, parameters = {}):
         if not self.methodExists(method):
@@ -57,6 +61,15 @@ class telegbot:
     def getBotToken(self):
         return self.config["botData"]["token"]
     
+    def getBotUsername(self):
+        return self.data["username"]
+    
+    def getBotData(self):
+        botData = self.apiRequest('getMe')
+        if not botData:
+            return False
+        return botData["result"]
+    
     def sendMessage(self, chat_id, text, disable_web_page_preview=False, reply_to_message_id=None, reply_markup=None):
         response = self.apiRequest('sendMessage', {
             "chat_id": chat_id,
@@ -65,6 +78,7 @@ class telegbot:
             "reply_to_message_id": reply_to_message_id,
             "reply_markup": reply_markup
         })
-    
-    
+        
+        if response["ok"]:
+            self.runEvent(response["result"])
     

@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 from telegbot import telegbot
 from logger import logger
 logger = logger()
@@ -18,7 +19,7 @@ def receive_message(msg):
         else:
             bot.sendMessage(msg["chat"]["id"], "You don't have permission!")
     if msg["text"] == "/test keyboard":
-        keyboard = {"keyboard":[["1⃣","2⃣","3⃣","4⃣","5⃣","6⃣","7⃣","8⃣","9⃣","0⃣", "XD"],["q","w","e","r","t","y","u","i","o","p"],["/help", "/quit", "/test keyboard"]]}
+        keyboard = {"keyboard":[["1⃣","2⃣","3⃣","4⃣","5⃣","6⃣","7⃣","8⃣","9⃣","0⃣", "XD"],["q","w","e","r","t","y","u","i","o","p"],["/help", "/quit", "/test keyboard"]]}
         bot.sendMessage(msg["chat"]["id"], "Sending custom keyboard!", reply_markup=json.dumps(keyboard))
 def new_chat_participant(msg):
     print("Welcome @" + msg["new_chat_participant"]["username"] + " to " + msg["chat"]["title"])

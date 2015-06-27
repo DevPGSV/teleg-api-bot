@@ -1,8 +1,7 @@
 # teleg-api-bot
 Telegram Api for new bot system
 
-This proyect has been moved to
-https://github.com/LibreLabUCM/teleg-api-bot
+This proyect has been moved to [https://github.com/LibreLabUCM/teleg-api-bot](https://github.com/LibreLabUCM/teleg-api-bot)
 
 Dependencies: py-yaml
 
